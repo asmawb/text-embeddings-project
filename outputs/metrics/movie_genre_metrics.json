@@ -1,0 +1,12 @@
+[
+  {
+    "model": "tfidf_logreg",
+    "accuracy": 0.6231599607458292,
+    "macro_f1": 0.5112093001421113
+  },
+  {
+    "model": "sbert_logreg",
+    "accuracy": 0.6323192672554793,
+    "macro_f1": 0.5151877873888928
+  }
+]
