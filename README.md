@@ -1,79 +1,83 @@
-# Movie Genre Classification from Plot Descriptions (Text Embeddings)
+## Running the Project
 
-## Goal
-Build a text classification system that predicts a movie’s genre
-(Action, Comedy, Drama, Horror, Romance) using only its plot description.
-
-The project compares traditional TF-IDF embeddings with modern
-Sentence-BERT (SBERT) semantic embeddings.
+This project implements a complete, script-based machine learning pipeline
+for **movie genre classification from plot descriptions**.
+The steps below describe what each stage does and how the system is used.
 
 ---
 
-## Dataset
-**The Movies Dataset** (Kaggle – movies_metadata.csv)
+### Step 1: Prepare the dataset
 
-- Text input: movie plot description (`overview`)
-- Labels: movie genre
-- 5 target genres: Action, Comedy, Drama, Horror, Romance
-- Movies with multiple genres are mapped to a single primary genre
-- Dataset is balanced across genres
+The dataset preparation step cleans the raw **TMDB 5000 Movie Dataset**
+and converts it into a format suitable for machine learning.
 
-Raw data is not committed to GitHub.
+Dataset source:
+https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata
 
----
+During this step:
+- Movie plot overviews are extracted
+- Movies are filtered to a fixed set of genres
+- Samples with missing or invalid text are removed
+- The dataset is split into training and test sets
 
-## Methods
-
-### Embeddings
-1. **TF-IDF**
-   - Bag-of-words with uni-grams and bi-grams
-   - Captures keyword frequency
-
-2. **Sentence-BERT (SBERT)**
-   - Pretrained semantic text embeddings
-   - Encodes meaning beyond exact words
-
-### Classifier
-- Logistic Regression
-- Same classifier used for all embeddings to ensure fair comparison
+This step produces processed files that are later used for training.
 
 ---
 
-## Training & Evaluation
-- Train / test split: 80% / 20%
-- Metrics:
-  - Accuracy
-  - Macro F1-score (handles class balance fairly)
+### Step 2: Train the models
+
+In the training stage, two different text representations are evaluated:
+
+1. TF-IDF features with Logistic Regression  
+2. SBERT (Sentence-BERT) embeddings with Logistic Regression  
+
+Both models are trained on the same dataset and evaluated on a held-out test set.
+The model with the higher performance is automatically selected as
+the final model.
+
+After training:
+- The best-performing model is saved locally
+- Evaluation metrics are stored for reference
+- The selected model is used for inference in the demo
+
+All trained models and metrics are stored in the `outputs/` directory,
+which is intentionally excluded from GitHub.
 
 ---
 
-## Results
+### Step 3: Run the interactive demo
 
-| Model | Accuracy | Macro F1 |
-|------|----------|----------|
-| TF-IDF + Logistic Regression | 0.623 | 0.511 |
-| **SBERT + Logistic Regression** | **0.632** | **0.515** |
+The project includes an interactive command-line demo that allows a user
+to enter any movie description and receive a genre prediction.
 
----
+The demo loads the best model selected during training and performs
+real-time inference on the input text.
 
-## Discussion
-Movie genre classification from plot descriptions is a challenging task
-because genres often overlap and plot summaries may be ambiguous.
-
-TF-IDF relies on explicit keywords, which limits its performance when
-genre-specific words are not present.
-
-SBERT embeddings capture semantic information and improve performance
-slightly over TF-IDF, demonstrating the benefit of semantic embeddings
-for complex text classification tasks.
+For each input, the system outputs:
+- The predicted movie genre
+- A confidence score indicating prediction certainty
 
 ---
 
-## How to Run
+### Example
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python -m src.prepare_movies
-python -m src.train_movies
+Input movie description:
+
+A detective races against time to stop a serial killer before the next murder.
+
+Model output:
+
+Predicted genre: Thriller  
+Confidence score: 0.78
+
+This demonstrates how natural language plot descriptions can be mapped
+to high-level movie genres using text embeddings and classical classifiers.
+
+---
+
+### Notes
+
+- The dataset is not included in the repository and must be downloaded
+  separately from Kaggle.
+- Trained models are excluded from version control to keep the repository clean.
+- All results can be reproduced by following the documented steps.
